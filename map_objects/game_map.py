@@ -41,6 +41,7 @@ class GameMap:
         rooms = []
         num_rooms = 0
 
+        # room scatter randomly method
         for i in range(max_rooms):
             w = random.randint(room_min_size, room_max_size)
             h = random.randint(room_min_size, room_max_size)
@@ -114,3 +115,12 @@ class GameMap:
 
     def populate_map(self, entity_list):
         pass
+
+    def compute_fov(self, x, y, radius, algo, light_walls=True):
+        """
+        Returns 2d boolean mask of the area covered by transparent tiles based on radius at [y, x].
+        :param x:
+        :param y:
+        :return:
+        """
+        self.tiles.compute_fov(x, y, radius, light_walls, algo)
