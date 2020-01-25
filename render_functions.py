@@ -1,7 +1,7 @@
 import tcod
 
 
-def render_all(con, entities, game_map, screen_width, screen_height, colors):
+def render_all(con, entities, game_map, screen_width, screen_height, colors, fov_recompute):
     """
     Handle blitting everything to the console
 
@@ -11,26 +11,28 @@ def render_all(con, entities, game_map, screen_width, screen_height, colors):
     :param screen_width: int
     :param screen_height: int
     :param colors: dict of colors
+    :param fov_recompute: bool
     """
 
     # game map
     # Draw all the tiles in the game map
-    for y in range(game_map.height):
-        for x in range(game_map.width):
-            wall = not game_map.tiles.transparent[y, x]
-            visible = game_map.tiles.fov[y, x]  # to the player, only
+    # TODO: fix "visible"
+    if fov_recompute:
+        for y in range(game_map.height):
+            for x in range(game_map.width):
+                wall = not game_map.tiles.transparent[y, x]
+                visible = game_map.tiles.fov[y, x]  # to the player, only
 
-            if visible:
-                if wall:
-                    tcod.console_set_char_background(con, x, y, colors.get('light_wall'), tcod.BKGND_SET)
-                else:
-                    tcod.console_set_char_background(con, x, y, colors.get('light_ground'), tcod.BKGND_SET)
-
-            else:
-                if wall:
-                    tcod.console_set_char_background(con, x, y, colors.get('dark_wall'), tcod.BKGND_SET)
-                else:
-                    tcod.console_set_char_background(con, x, y, colors.get('dark_ground'), tcod.BKGND_SET)
+                if visible:
+                    if wall:
+                        tcod.console_set_char_background(con, x, y, colors.get('light_wall'), tcod.BKGND_SET)
+                    else:
+                        tcod.console_set_char_background(con, x, y, colors.get('light_ground'), tcod.BKGND_SET)
+                elif game_map.tilemap[y, x].explored:
+                    if wall:
+                        tcod.console_set_char_background(con, x, y, colors.get('dark_wall'), tcod.BKGND_SET)
+                    else:
+                        tcod.console_set_char_background(con, x, y, colors.get('dark_ground'), tcod.BKGND_SET)
 
     # entities
     for entity in entities:

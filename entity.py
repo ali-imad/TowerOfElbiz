@@ -1,6 +1,6 @@
 class Entity:
     """
-    A generic entity object. Entities are anything that is interactable that isnt the map itself.
+    A generic entity object. Entities are anything that is interact-able that isn't the map itself.
 
     Examples: Players, enemies, items, etc.
     """

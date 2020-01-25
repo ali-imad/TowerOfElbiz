@@ -1,6 +1,6 @@
-import tcod
+import tcod, tcod.console, tcod.map
+from fighter import Fighter
 from input_handlers import handle_keys
-from entity import Entity
 from render_functions import render_all, clear_all
 from map_objects.game_map import GameMap
 
@@ -19,7 +19,7 @@ def main():
     screen_height = 50
 
     # map settings
-    map_width = 80
+    map_width = 50
     map_height = 40
 
     room_max_size = 11
@@ -27,27 +27,26 @@ def main():
     max_rooms = 50
 
     # fov settings
-    fov_algo = tcod.FOV_PERMISSIVE_2
+    fov_algo = tcod.FOV_DIAMOND
     fov_light_walls = True
-    fov_radius = 7
+    fov_radius = 8
 
     tcod.console_set_custom_font(FONT, tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
     tcod.console_init_root(screen_width, screen_height, 'nRogue', False, tcod.RENDERER_OPENGL2, vsync=False)
 
     game_map = GameMap(map_width, map_height)
 
-    con = tcod.console_new(screen_width, screen_height)
+    con = tcod.console.Console(screen_width, screen_height)
 
     key = tcod.Key()
     mouse = tcod.Mouse()
 
-    player = Entity(0, 0, '@', tcod.white, 'Player')
+    player = Fighter(0, 0, '@', tcod.white, 'Player')
     entities = [player]
 
     game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player)
 
     fov_recompute = True
-    fov_map = game_map.tiles.fov  # stores the fov map in a variable. type: np.ndarray[y, x]
 
     game_map.populate_map(entities)
 
@@ -55,9 +54,11 @@ def main():
         tcod.sys_check_for_event(tcod.EVENT_KEY_PRESS, key, mouse)
 
         if fov_recompute:
-            game_map.tiles.compute_fov(player.x, player.y, fov_radius, fov_light_walls, fov_algo)
+            game_map.compute_fov(player.x, player.y, fov_radius, fov_algo, fov_light_walls)
 
-        render_all(con, entities, game_map, screen_width, screen_height, COLORS)
+        render_all(con, entities, game_map, map_width, map_height, COLORS, fov_recompute)
+        fov_recompute = False
+
         tcod.console_flush()
         clear_all(con, entities)
 
@@ -71,6 +72,7 @@ def main():
             dx, dy = move
             if game_map.tiles.walkable[player.y + dy, player.x + dx]:
                 player.move(dx, dy)
+                fov_recompute = True
 
         if exit:
             return True
