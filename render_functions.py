@@ -1,15 +1,15 @@
 import tcod
 
 
-def render_all(con, entities, game_map, screen_width, screen_height, colors, fov_recompute):
+def render_all(con, entities, game_map, con_width, con_height, colors, fov_recompute):
     """
-    Handle blitting everything to the console
+    Handle blitting everything in one console to the root console
 
     :param con: tcod console
     :param entities: list of Entity
     :param game_map: GameMap of tiles
-    :param screen_width: int
-    :param screen_height: int
+    :param con_width: int
+    :param con_height: int
     :param colors: dict of colors
     :param fov_recompute: bool
     """
@@ -17,7 +17,7 @@ def render_all(con, entities, game_map, screen_width, screen_height, colors, fov
     # game map
     # Draw all the tiles in the game map
     # TODO: fix "visible"
-    if fov_recompute:
+    if fov_recompute:  # then re-render the game map
         for y in range(game_map.height):
             for x in range(game_map.width):
                 wall = not game_map.tiles.transparent[y, x]
@@ -28,17 +28,19 @@ def render_all(con, entities, game_map, screen_width, screen_height, colors, fov
                         tcod.console_set_char_background(con, x, y, colors.get('light_wall'), tcod.BKGND_SET)
                     else:
                         tcod.console_set_char_background(con, x, y, colors.get('light_ground'), tcod.BKGND_SET)
-                elif game_map.tilemap[y, x].explored:
-                    if wall:
-                        tcod.console_set_char_background(con, x, y, colors.get('dark_wall'), tcod.BKGND_SET)
-                    else:
-                        tcod.console_set_char_background(con, x, y, colors.get('dark_ground'), tcod.BKGND_SET)
+
+                else:
+                    if game_map.tiles.explored[y, x]:
+                        if wall:
+                            tcod.console_set_char_background(con, x, y, colors.get('dark_wall'), tcod.BKGND_SET)
+                        else:
+                            tcod.console_set_char_background(con, x, y, colors.get('dark_ground'), tcod.BKGND_SET)
 
     # entities
     for entity in entities:
         draw_entity(con, entity, game_map.tiles.fov)
 
-    tcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
+    tcod.console_blit(con, 0, 0, con_width, con_height, 0, 0, 0)
 
 
 def clear_all(con, entities):

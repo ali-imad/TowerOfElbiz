@@ -29,7 +29,7 @@ def main():
     # fov settings
     fov_algo = tcod.FOV_DIAMOND
     fov_light_walls = True
-    fov_radius = 8
+    fov_radius = 7
 
     tcod.console_set_custom_font(FONT, tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
     tcod.console_init_root(screen_width, screen_height, 'nRogue', False, tcod.RENDERER_OPENGL2, vsync=False)
@@ -48,7 +48,7 @@ def main():
 
     fov_recompute = True
 
-    game_map.populate_map(entities)
+    game_map.populate_map(entities)  # does nothing right now
 
     while not tcod.console_is_window_closed():
         tcod.sys_check_for_event(tcod.EVENT_KEY_PRESS, key, mouse)

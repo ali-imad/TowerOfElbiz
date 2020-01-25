@@ -10,10 +10,3 @@ class Entity:
         self.char = char
         self.color = color
         self.name = name
-
-    def move(self, dx, dy):
-        """
-        Moves the entity to (x+dx, y+dy)
-        """
-        self.x += dx
-        self.y += dy

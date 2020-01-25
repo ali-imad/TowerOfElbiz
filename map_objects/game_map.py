@@ -10,16 +10,35 @@ class GameMap:
         self.width = width
         self.height = height
         self.tiles = tcod.map.Map(self.width, self.height)  # tiles are addressed in [y, x]
-        self.tilemap = self.init_tilemap()
+        self.tiles.explored = self.init_tilemap()
         self.rooms = None
 
     def init_tilemap(self):
-        tilemap = np.ndarray((self.height, self.width), Tile)
+        """
+        Returns an ndarray of False bools
+        :return: ndarray of size (self.height, self.width)
+        """
+        tilemap = np.ndarray((self.height, self.width), bool)
 
         # fill tilemap with unexplored tiles
-        tilemap[:, :] = Tile()
-
+        tilemap[:, :] = False
         return tilemap
+
+    def compute_fov(self, x, y, radius, algo, light_walls=True):
+        """
+        Calculates fov in self.tiles.fov based on radius at [y, x].
+
+        :param x: int
+        :param y: int
+        :param radius: int
+        :param algo: int
+        :param light_walls: bool
+        """
+        self.tiles.compute_fov(x, y, radius, light_walls, algo)
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.tiles.fov[y, x]:
+                    self.tiles.explored[y, x] = True
 
     def create_room(self, room):
         """
@@ -124,15 +143,3 @@ class GameMap:
 
     def populate_map(self, entity_list):
         pass
-
-    def compute_fov(self, x, y, radius, algo, light_walls=True):
-        """
-        Returns 2d boolean mask of the area covered by transparent tiles based on radius at [y, x].
-
-        :param x: int
-        :param y: int
-        :param radius: int
-        :param algo: int
-        :param light_walls: bool
-        """
-        self.tiles.compute_fov(x, y, radius, light_walls, algo)
