@@ -1,8 +1,9 @@
+import tcod
 from entity import Entity
 
 
 class Fighter(Entity):
-    def __init__(self, x, y, char, colour, name):
+    def __init__(self, x, y, char='@', colour=tcod.white, name='Player'):
         Entity.__init__(self, x, y, char, colour, name)
         self.hp = 16
         self.ap = 3
@@ -17,10 +18,14 @@ class Fighter(Entity):
         if self.name == 'orc':
             self.hp = 8
             self.ap = 2
+            self.char = 'o'
+            self.color = tcod.darker_red
 
         if self.name == 'jackal':
             self.hp = 5
             self.ap = 3
+            self.char = 'j'
+            self.color = tcod.darker_azure
 
     def move(self, dx, dy):
         """

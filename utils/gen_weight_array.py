@@ -11,7 +11,7 @@ def gen_weight_table_array(dict_of_weights):
 
     wt_as_array = []
     for key in dict_of_weights:
-        for x in range(dict_of_weights):
+        for x in range(dict_of_weights[key]):
             wt_as_array.append(key)
 
     return wt_as_array

@@ -46,12 +46,10 @@ def main():
     entities = [player]
 
     game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player)
-    test_enemy = Fighter(player.x - 2, player.y - 1, '@', tcod.dark_red, 'orc')
-    entities.insert(0, test_enemy)
 
     fov_recompute = True
 
-    game_map.populate_map(entities)  # does nothing right now
+    game_map.populate_map(entities)
 
     while not tcod.console_is_window_closed():
         tcod.sys_check_for_event(tcod.EVENT_KEY_PRESS, key, mouse)

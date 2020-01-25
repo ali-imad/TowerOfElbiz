@@ -3,6 +3,7 @@ import tcod.map
 import numpy as np
 import utils.gen_weight_array
 from entity import Entity
+from fighter import Fighter
 from map_objects.rectangle import Rect
 
 
@@ -147,7 +148,7 @@ class GameMap:
         player.x, player.y = rooms[0].center()
 
     def populate_map(self, entity_list):
-        max_mobs_in_room = 3  # the max amount of mobs in a given room
+        max_mobs_in_room = 4  # the max amount of mobs in a given room
 
         weight_table = {
             'orc': 2,
@@ -156,4 +157,15 @@ class GameMap:
 
         wt_as_array = utils.gen_weight_array.gen_weight_table_array(weight_table)
         for room in self.rooms[1:]:  # populate rooms that arent the first room
-            pass
+            num_mobs = random.randint(1, max_mobs_in_room)
+            for mob in range(num_mobs):
+                rand_x = random.randint(room.x1+2, room.x2-2)
+                rand_y = random.randint(room.y1+2, room.y2-2)
+
+                spawn_name = random.choice(wt_as_array)
+                # TODO: replace fighter with basic mob after functionality is finished
+                entity_list.append(Fighter(rand_x, rand_y, name=spawn_name))
+
+        # initialize "contains" tiles
+        for mob in entity_list:
+            self.tiles.contains[mob.y, mob.x] = mob
