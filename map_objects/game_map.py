@@ -1,8 +1,8 @@
 import random
 import tcod.map
 import numpy as np
+import utils.gen_weight_array
 from entity import Entity
-from map_objects.tile import Tile
 from map_objects.rectangle import Rect
 
 
@@ -147,4 +147,13 @@ class GameMap:
         player.x, player.y = rooms[0].center()
 
     def populate_map(self, entity_list):
-        pass
+        max_mobs_in_room = 3  # the max amount of mobs in a given room
+
+        weight_table = {
+            'orc': 2,
+            'jackal': 3
+        }
+
+        wt_as_array = utils.gen_weight_array.gen_weight_table_array(weight_table)
+        for room in self.rooms[1:]:  # populate rooms that arent the first room
+            pass
