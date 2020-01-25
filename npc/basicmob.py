@@ -1,9 +1,10 @@
-from entity import Entity
+from fighter import Fighter
 
-class BasicMob(Entity):
+
+class BasicMob(Fighter):
     def __init__(self, x, y, char, color, mob_type):
-        Entity.__init__(x, y, char, color)
-        BasicMob.mob_type = mob_type
+        Fighter.__init__(x, y, char, color, mob_type)
+        self.mob_type = mob_type
 
     def path(self, target):
         """

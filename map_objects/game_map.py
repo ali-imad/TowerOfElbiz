@@ -1,6 +1,7 @@
 import random
 import tcod.map
 import numpy as np
+from entity import Entity
 from map_objects.tile import Tile
 from map_objects.rectangle import Rect
 
@@ -11,11 +12,15 @@ class GameMap:
         self.height = height
         self.tiles = tcod.map.Map(self.width, self.height)  # tiles are addressed in [y, x]
         self.tiles.explored = self.init_tilemap()
+
+        # TODO: fill "contains" with entities before loop starts
+        self.tiles.contains = np.ndarray((self.height, self.width), Entity)
+
         self.rooms = None
 
     def init_tilemap(self):
         """
-        Returns an ndarray of False bools
+        Returns an ndarray of type, by default it's a bool
         :return: ndarray of size (self.height, self.width)
         """
         tilemap = np.ndarray((self.height, self.width), bool)

@@ -1,3 +1,4 @@
+# TODO: implement tcod.event
 import tcod, tcod.console, tcod.map
 from fighter import Fighter
 from input_handlers import handle_keys
@@ -45,6 +46,8 @@ def main():
     entities = [player]
 
     game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player)
+    test_enemy = Fighter(player.x - 2, player.y - 1, '@', tcod.dark_red, 'orc')
+    entities.insert(0, test_enemy)
 
     fov_recompute = True
 
@@ -64,15 +67,14 @@ def main():
 
         action = handle_keys(key)
 
-        move = action.get('move')
+        move_or_attack = action.get('move_or_attack')
         exit = action.get('exit')
         fullscreen = action.get('fullscreen')
 
-        if move:
-            dx, dy = move
-            if game_map.tiles.walkable[player.y + dy, player.x + dx]:
-                player.move(dx, dy)
-                fov_recompute = True
+        if move_or_attack:  # python returns true for any non-zero value
+            dx, dy = move_or_attack
+            player.move_or_attack(dx, dy, game_map)
+            fov_recompute = True
 
         if exit:
             return True
